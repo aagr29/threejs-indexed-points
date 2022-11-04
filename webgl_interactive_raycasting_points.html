@@ -43,10 +43,10 @@
 			const spheres = []; //variable as array
 			let pcBuffer, pcIndexed, pcIndexedOffset; //variables for point cloud buffer,point cloud indexed, point cloud offset
 
-			const threshold = 0.1;
-			const pointSize = 0.05;
-			const width = 80;
-			const length = 160;
+			const threshold = 0.008;// ?????????? variable for threshold set to 0.1
+			const pointSize = 0.05;// size of points in point cloud
+			const width = 80; // variable for width of scene
+			const length = 160; // Variable for length
 			const rotateY = new THREE.Matrix4();
 
 			init();
@@ -196,13 +196,13 @@
 				const sphereMaterial = new THREE.MeshBasicMaterial( { color: 0x1010D8 } );///////////////////change colour of trail from here
 			
 // control number of spheres in trail from here.
-				for ( let i = 0; i < 1; i ++ ) {
+				// for ( let i = 0; i < 1; i ++ ) {
 
-					const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
-					scene.add( sphere );
-					spheres.push( sphere );
+				// 	const sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+				// 	scene.add( sphere );
+				// 	spheres.push( sphere );
 
-				}
+				// }
 
 				//
 
@@ -234,21 +234,24 @@
 			}
 
 			function onPointerClick(event) {
+				raycaster.setFromCamera( pointer, camera );
 				const intersections = raycaster.intersectObjects( pointclouds, false );
 				intersection = ( intersections.length ) > 0 ? intersections[ 0 ] : null;
 				let buffer = pcBuffer
+				// console.log(intersection)
 				console.log(intersection, pcBuffer)
 				if (intersection.object.uuid == pcIndexedOffset.uuid) buffer = pcIndexedOffset
 				if (intersection.object.uuid == pcIndexed.uuid) buffer = pcIndexed
-
 				const { index } = intersection
+				console.log(index)
 				const first = index * 3
-				
+				console.log(first)
 				var colors = buffer.geometry.attributes.color.array;
+				console.log(colors)
 				let currentPointsIndex = 0
-				colors[first] = 255
-				colors[first + 1] = 255
-				colors[first + 2] = 255
+				colors[first] = 256
+				colors[first + 1] = 256
+				colors[first + 2] = 256
 
 				buffer.geometry.attributes.color.array = colors
 				buffer.geometry.attributes.color.needsUpdate = true;    
@@ -290,25 +293,25 @@
 				const intersections = raycaster.intersectObjects( pointclouds, false );
 				intersection = ( intersections.length ) > 0 ? intersections[ 0 ] : null;
 
-				if ( toggle > 0.02 && intersection !== null ) {
+				// if ( toggle > 0.02 && intersection !== null ) {
 
-					spheres[ spheresIndex ].position.copy( intersection.point );
-					spheres[ spheresIndex ].scale.set( 1, 1, 1 );
-					spheresIndex = ( spheresIndex + 1 ) % spheres.length;
+				// 	spheres[ spheresIndex ].position.copy( intersection.point );
+				// 	spheres[ spheresIndex ].scale.set( 1, 1, 1 );
+				// 	spheresIndex = ( spheresIndex + 1 ) % spheres.length;
 
-					toggle = 0;
+				// 	toggle = 0;
 
-				}
+				// }
 
-				for ( let i = 0; i < spheres.length; i ++ ) {
+				// for ( let i = 0; i < spheres.length; i ++ ) {
 
-					const sphere = spheres[ i ];
-					sphere.scale.multiplyScalar( 0.98 );
-					sphere.scale.clampScalar( 0.01, 1 );
+				// 	const sphere = spheres[ i ];
+				// 	sphere.scale.multiplyScalar( 0.98 );
+				// 	sphere.scale.clampScalar( 0.01, 1 );
 
-				}
+				// }
 
-				toggle += clock.getDelta();
+				// toggle += clock.getDelta();
 
 				renderer.render( scene, camera );
 
